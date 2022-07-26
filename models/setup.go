@@ -5,22 +5,20 @@ import (
     "gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 func makeMigrations(db *gorm.DB) (error) {
-    err := db.AutoMigrate(&User{}); err != nil {
+    err := db.AutoMigrate(&User{})
     return err
 }
 
-func GetDB(db_file string) (*gorm.DB, error) {
-    db, err := gorm.Open(db_file, &gorm.Config{})
+func InitDB(db_file string) (error) {
+    db, err := gorm.Open(sqlite.Open(db_file), &gorm.Config{})
 
     if err != nil {
-        return nil, err
+        return err
     }
 
     err = makeMigrations(db)
-    if err != nil {
-        return nil, err
-    }
-
-    return db, err
+    return err
 }
