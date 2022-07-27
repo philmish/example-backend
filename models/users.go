@@ -33,3 +33,12 @@ func UserByEmail(mail, dbname string, user User) (error) {
     return err
 }
 
+func UserByName(name, dbname string, user User) (error) {
+    db, err := gorm.Open(sqlite.Open(dbname), &gorm.Config{})
+    if err != nil {
+        return err
+    }
+    err = db.Where("screen_name = ?", name).First(&user).Error
+    return err
+}
+

@@ -5,8 +5,6 @@ import (
     "gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
 func makeMigrations(db *gorm.DB) (error) {
     err := db.AutoMigrate(&User{})
     return err

@@ -25,7 +25,7 @@ func Login(c *gin.Context) {
 
     decoder := json.NewDecoder(c.Request.Body)
     if err := decoder.Decode(&req); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request", "raw": err.Error()})
+        c.JSON(http.StatusBadRequest, gin.H{"error": "malformed data"})
     }
 
     if err := models.UserByEmail(req.Email, "test.db", user); err != nil {
