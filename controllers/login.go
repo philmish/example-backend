@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,14 +23,15 @@ func Login(c *gin.Context) {
     var req LoginRequest
     var user models.User
 
-    if err := c.BindJSON(&req); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+    decoder := json.NewDecoder(c.Request.Body)
+    if err := decoder.Decode(&req); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request", "raw": err.Error()})
     }
 
-    if err := models.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "Incorrect creds"})
+    if err := models.UserByEmail(req.Email, "test.db", user); err != nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid creds"})
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"data": LoginResponse{Name: user.Screen_name, Is_admin: user.Is_admin}})
+    c.JSON(http.StatusOK, gin.H{"data": user.ToUserData()})
 }

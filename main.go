@@ -1,14 +1,18 @@
 package main
 
 import (
-    "net/http"
-    "github.com/gin-gonic/gin"
-    "github.com/philmish/example-backend/models"
-    "github.com/philmish/example-backend/controllers"
+	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/philmish/example-backend/controllers"
+	"github.com/philmish/example-backend/models"
 )
 
 func main() {
-    models.InitDB("./test.db")
+    if err := models.InitDB("./test.db"); err != nil {
+        log.Fatalf(err.Error())
+    }
 
     r := gin.Default()
     
