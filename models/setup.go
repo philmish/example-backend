@@ -1,8 +1,10 @@
 package models
 
 import (
-    "gorm.io/driver/sqlite"
-    "gorm.io/gorm"
+	"fmt"
+
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func makeMigrations(db *gorm.DB) (error) {
@@ -10,11 +12,20 @@ func makeMigrations(db *gorm.DB) (error) {
     return err
 }
 
-func InitDB(db_file string) (error) {
+func populateDb() {
+    //TODO implement data population
+    fmt.Println("Populating db...")
+}
+
+func InitDB(db_file string, populate bool) (error) {
     db, err := gorm.Open(sqlite.Open(db_file), &gorm.Config{})
 
     if err != nil {
         return err
+    }
+
+    if populate {
+        populateDb()
     }
 
     err = makeMigrations(db)

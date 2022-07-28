@@ -23,7 +23,7 @@ func Validate(key []byte, tokenString string) (UserClaims, error) {
     }
 
     if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-        return UserClaims{Name: string(claims["name"]), IsAdmin: bool(claims["isadmin"])}, nil
+        return UserClaims{Name: claims["name"].(string), IsAdmin: claims["isadmin"].(bool)}, nil
     } else {
         return UserClaims{}, fmt.Errorf("Invalid claims")
     }

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+    "flag"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/philmish/example-backend/controllers"
@@ -11,8 +12,10 @@ import (
 )
 
 func main() {
+    populate := flag.Bool("populate", false, "if set populate the database")
+    envFile := flag.String("env", ".env", "env file to use")
 
-    if err := godotenv.Load(".env"); err != nil {
+    if err := godotenv.Load(*envFile); err != nil {
         log.Fatalf(err.Error())
     }
 
@@ -22,7 +25,7 @@ func main() {
         log.Fatalf("Missing Database name env var")
     }
 
-    if err := models.InitDB(dbName); err != nil {
+    if err := models.InitDB(dbName, *populate); err != nil {
         log.Fatalf(err.Error())
     }
 

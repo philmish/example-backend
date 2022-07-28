@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/philmish/example-backend/middleware"
@@ -21,8 +22,8 @@ type LoginResponse struct {
     Is_admin bool `json:"isAdmin"`
 }
 
-func getEnvVars() ([string]string, error) {
-    res := [string]string{}
+func getEnvVars() (map[string]string, error) {
+    res := map[string]string{}
     res["key"] = os.Getenv("SECRET")
     res["db"] = os.Getenv("DB_NAME")
     for k, v := range res {
@@ -46,10 +47,17 @@ func Login(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "malformed data"})
     }
 
-    if err := models.UserByEmail(req.Email, "test.db", user); err != nil {
+    if err := models.UserByEmail(req.Email, envVars["db"], user); err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid creds"})
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"data": user.ToUserData()})
+    data := user.ToUserData()
+    claims := user.ToUserClaims() 
+    token, err := middleware.CreateToken([]byte(envVars["key"]), claims)
+    ttl := time.Hour * time.Duration(1)
+    now := time.Now()
+    expire := now.Add(ttl)
+    c.SetCookie("token", token, int(expire.Unix()), "/", "localhost", false, true)
+    c.JSON(http.StatusOK, gin.H{"data": data, "token": token})
 }
