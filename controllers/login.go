@@ -47,12 +47,13 @@ func Login(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "malformed data"})
     }
 
-    if err := models.UserByEmail(req.Email, envVars["db"], user); err != nil {
+    user, err = models.UserByEmail(req.Email, envVars["db"], user)
+    if err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid creds"})
         return
     }
 
-    data := user.ToUserData()
+    data := models.Userdata{Name: user.Screen_name, Is_admin: user.Is_admin}
     claims := user.ToUserClaims() 
     token, err := middleware.CreateToken([]byte(envVars["key"]), claims)
     ttl := time.Hour * time.Duration(1)

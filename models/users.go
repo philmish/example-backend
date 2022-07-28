@@ -1,19 +1,21 @@
 package models
 
 import (
+	"log"
+
+	"github.com/philmish/example-backend/middleware"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-    "github.com/philmish/example-backend/middleware"
 )
 
 type User struct {
     gorm.Model
-    id uint `gorm:"primaryKey"`
-    email string
-    first_name string 
-    last_name string
-    screen_name string
-    is_admin bool
+    E_mail string `gorm:"column:e_mail;type:varchar(255)"`
+    First_name string `gorm:"column:first_name;type:varchar(80)"`
+    Last_name string `gorm:"column:last_name;type:varchar(80)"`
+    Screen_name string `gorm:"column:screen_name;type:varchar(25)"`
+    Pass string `gorm:"column:pass;type:varchar(300)"`
+    Is_admin bool `gorm:"column:is_admin;type:boolean"` 
 }
 
 type Userdata struct {
@@ -22,20 +24,21 @@ type Userdata struct {
 }
 
 func (u User)ToUserData() Userdata {
-    return Userdata{Name: u.screen_name, Is_admin: u.is_admin}
+    return Userdata{Name: u.Screen_name, Is_admin: u.Is_admin}
 }
 
 func (u User)ToUserClaims() middleware.UserClaims {
-    return middleware.UserClaims{Name: u.screen_name, IsAdmin: u.is_admin}
+    return middleware.UserClaims{Name: u.Screen_name, IsAdmin: u.Is_admin}
 }
 
-func UserByEmail(mail, dbname string, user User) (error) {
+func UserByEmail(mail, dbname string, user User) (User, error) {
     db, err := gorm.Open(sqlite.Open(dbname), &gorm.Config{})
     if err != nil {
-        return err
+        return user, err
     }
-    err = db.Where("email = ?", mail).First(&user).Error
-    return err
+    err = db.Where(&User{E_mail: mail}).First(&user).Error
+    log.Println(user)
+    return user, err
 }
 
 func UserByName(name, dbname string, user User) (error) {

@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-    populate := flag.Bool("populate", false, "if set populate the database")
+    populate := flag.Bool("populate", true, "if set populate the database")
     envFile := flag.String("env", ".env", "env file to use")
 
     if err := godotenv.Load(*envFile); err != nil {
