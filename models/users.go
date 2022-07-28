@@ -1,8 +1,6 @@
 package models
 
 import (
-	"log"
-
 	"github.com/philmish/example-backend/middleware"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -37,16 +35,15 @@ func UserByEmail(mail, dbname string, user User) (User, error) {
         return user, err
     }
     err = db.Where(&User{E_mail: mail}).First(&user).Error
-    log.Println(user)
     return user, err
 }
 
-func UserByName(name, dbname string, user User) (error) {
+func UserByName(name, dbname string, user User) (User, error) {
     db, err := gorm.Open(sqlite.Open(dbname), &gorm.Config{})
     if err != nil {
-        return err
+        return user, err
     }
-    err = db.Where("screen_name = ?", name).First(&user).Error
-    return err
+    err = db.Where(&User{Screen_name: name}).First(&user).Error
+    return user, err
 }
 

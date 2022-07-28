@@ -53,12 +53,18 @@ func Login(c *gin.Context) {
         return
     }
 
-    data := models.Userdata{Name: user.Screen_name, Is_admin: user.Is_admin}
+    if !middleware.CheckPass(req.Pass, user.Pass) {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid creds"})
+        return
+    }
+
+    data := user.ToUserData()
     claims := user.ToUserClaims() 
     token, err := middleware.CreateToken([]byte(envVars["key"]), claims)
     ttl := time.Hour * time.Duration(1)
     now := time.Now()
     expire := now.Add(ttl)
     c.SetCookie("token", token, int(expire.Unix()), "/", "localhost", false, true)
+
     c.JSON(http.StatusOK, gin.H{"data": data, "token": token})
 }
