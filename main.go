@@ -18,7 +18,7 @@ func main() {
     flag.StringVar(&envFile, "env", ".env", "env file to use")
     flag.Parse()
 
-    if err := godotenv.Load(*envFile); err != nil {
+    if err := godotenv.Load(envFile); err != nil {
         log.Fatalf(err.Error())
     }
 
@@ -28,7 +28,7 @@ func main() {
         log.Fatalf("Missing Database name env var")
     }
 
-    if err := models.InitDB(dbName, *populate); err != nil {
+    if err := models.InitDB(dbName, populate); err != nil {
         log.Fatalf(err.Error())
     }
 
