@@ -7,11 +7,16 @@ import (
 
 func makeMigrations(db *gorm.DB) (error) {
     err := db.AutoMigrate(&User{})
+    if err != nil {
+        return err
+    }
+    err = db.AutoMigrate(&Challenge{})
     return err
 }
 
 func populateDb(db *gorm.DB) {
     populateUsers(db)
+    populateChallenges(db)
 }
 
 func InitDB(db_file string, populate bool) (error) {
