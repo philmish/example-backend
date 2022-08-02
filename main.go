@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/philmish/example-backend/controllers"
 	"github.com/philmish/example-backend/models"
+    "github.com/philmish/example-backend/middleware"
 )
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
     }
 
     r := gin.Default()
+    r.Use(middleware.CORS())
     
     r.GET("/", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"data": "Hello World"})
