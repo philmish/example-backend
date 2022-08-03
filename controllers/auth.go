@@ -29,11 +29,8 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	newClaims := user.ToUserClaims()
-	token, err := middleware.CreateToken([]byte(envVars["key"]), newClaims)
-	ttl := time.Hour * time.Duration(1)
-	now := time.Now()
-	expire := now.Add(ttl)
-	c.SetCookie("token", token, int(expire.Unix()), "/", "localhost", false, true)
+	claims := user.ToUserClaims()
+    c.Set("claims", claims.ToMap())
+    middleware.MakeCookie(c)
 	c.JSON(http.StatusOK, gin.H{"data": "success"})
 }
