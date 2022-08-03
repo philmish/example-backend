@@ -2,7 +2,6 @@ package models
 
 import (
 	"log"
-	"time"
 
 	"github.com/philmish/example-backend/middleware"
 	"gorm.io/gorm"
