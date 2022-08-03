@@ -10,10 +10,7 @@ import (
 )
 
 func Auth(c *gin.Context) {
-    envVars, err := getEnvVars()
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load env"})
-    }
+    envVars := c.GetStringMapString("env")
     cookie, err := c.Cookie("token")
     if err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "No token"})

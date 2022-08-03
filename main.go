@@ -35,6 +35,7 @@ func main() {
 
     r := gin.Default()
     r.Use(middleware.CORS())
+    r.Use(middleware.GetEnv())
     
     r.GET("/", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"data": "Hello World"})

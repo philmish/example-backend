@@ -2,9 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -22,23 +20,8 @@ type LoginResponse struct {
     Is_admin bool `json:"isAdmin"`
 }
 
-func getEnvVars() (map[string]string, error) {
-    res := map[string]string{}
-    res["key"] = os.Getenv("SECRET")
-    res["db"] = os.Getenv("DB_NAME")
-    for k, v := range res {
-        if v == "" {
-            return res, fmt.Errorf("No value for %s found", k)
-        }
-    }
-    return res, nil
-}
-
 func Login(c *gin.Context) {
-    envVars, err := getEnvVars()
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-    }
+    envVars := c.GetStringMapString("env")
     var req LoginRequest
     var user models.User
 
@@ -47,7 +30,7 @@ func Login(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "malformed data"})
     }
 
-    user, err = models.UserByEmail(req.Email, envVars["db"], user)
+    user, err := models.UserByEmail(req.Email, envVars["db"], user)
     if err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid creds"})
         return
