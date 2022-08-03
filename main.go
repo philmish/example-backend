@@ -40,9 +40,9 @@ func main() {
     r.GET("/", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"data": "Hello World"})
     })
-    r.GET("/auth", controllers.Auth)
+    r.GET("/auth", middleware.ParseToken(), controllers.Auth)
     r.POST("/login", controllers.Login)
-    r.POST("/challenge", controllers.CreateChallenge)
+    r.POST("/challenge", middleware.ParseToken(), controllers.CreateChallenge)
 
     r.Run()
 }

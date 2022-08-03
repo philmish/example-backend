@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/philmish/example-backend/middleware"
@@ -41,13 +40,9 @@ func Login(c *gin.Context) {
         return
     }
 
-    data := user.ToUserData()
-    claims := user.ToUserClaims() 
-    token, err := middleware.CreateToken([]byte(envVars["key"]), claims)
-    ttl := time.Hour * time.Duration(1)
-    now := time.Now()
-    expire := now.Add(ttl)
-    c.SetCookie("token", token, int(expire.Unix()), "/", "localhost", false, true)
+    claims := user.ToUserClaims()
+    c.Set("claims", claims.ToMap())
 
-    c.JSON(http.StatusOK, gin.H{"data": data, "token": token})
+    middleware.MakeCookie(c)
+    c.JSON(http.StatusOK, gin.H{"data": claims})
 }
