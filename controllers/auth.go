@@ -30,7 +30,7 @@ func Auth(c *gin.Context) {
 	}
 
 	claims := user.ToUserClaims()
-    c.Set("claims", claims.ToMap())
-    middleware.MakeCookie(c)
+	c.Set("claims", claims.ToMap())
+	middleware.MakeCookie(c)
 	c.JSON(http.StatusOK, gin.H{"data": "success"})
 }
