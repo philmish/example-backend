@@ -40,11 +40,11 @@ func startDB(populate bool, envFile string) {
 
 func main() {
 	// Bind cli flags to vars
-    parseFlags()
+	parseFlags()
 
-    log.Println("parsed flags")
+	log.Println("parsed flags")
 	startDB(populate, envFile)
-    log.Println("started db")
+	log.Println("started db")
 
 	r := gin.Default()
 	r.Use(middleware.CORS(origin))
@@ -55,7 +55,7 @@ func main() {
 	})
 	r.GET("/auth", middleware.ParseToken(), controllers.Auth)
 	r.POST("/login", controllers.Login)
-    r.GET("/logout", middleware.ParseToken(), controllers.Logout)
+	r.GET("/logout", middleware.ParseToken(), controllers.Logout)
 
 	r.Run()
 }

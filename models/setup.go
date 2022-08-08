@@ -7,7 +7,7 @@ import (
 
 func makeMigrations(db *gorm.DB) error {
 	err := db.AutoMigrate(&User{})
-    return err
+	return err
 }
 
 func populateDb(db *gorm.DB) {
