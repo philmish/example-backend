@@ -55,6 +55,7 @@ func main() {
 	})
 	r.GET("/auth", middleware.ParseToken(), controllers.Auth)
 	r.POST("/login", controllers.Login)
+    r.GET("/logout", middleware.ParseToken(), controllers.Logout)
 
 	r.Run()
 }
